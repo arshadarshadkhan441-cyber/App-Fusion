@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Course Platform</title>
+<link rel="stylesheet" href="css/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">🎓 Course Selling Platform</div>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="cart.html">Cart</a>
+    <span id="authArea"></span>
+  </nav>
+
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+</header>
+
+<!-- FILTER -->
+<section class="filter">
+  <input type="text" id="search" placeholder="Search courses...">
+  
+  <select id="categoryFilter">
+    <option value="all">All Categories</option>
+    <option value="web">Web Dev</option>
+    <option value="ai">AI</option>
+    <option value="business">Business</option>
+  </select>
+
+  <button onclick="toggleDarkMode()">🌙</button>
+</section>
+
+<!-- COURSES -->
+<section id="courses" class="course-container"></section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-container">
+    
+    <div class="footer-section">
+      <h3>Course Selling Platform</h3>
+      <p>Learn anytime, anywhere with our online courses.</p>
+    </div>
+
+    <div class="footer-section">
+      <h4>Quick Links</h4>
+      <a href="index.html">Home</a>
+      <a href="#">Courses</a>
+      <a href="login.html">Login</a>
+      <a href="signup.html">Signup</a>
+    </div>
+
+    <div class="footer-section">
+      <h4>Contact</h4>
+      <p>Email: support@Coursesellingplatform.com</p>
+      <p>Phone: +92 435 1234567</p>
+    </div>
+
+  </div>
+
+  <p class="copyright">© 2026 Course Selling Platform</p>
+</footer>
+
+<script src="js/app.js"></script>
+
+<script>
+function toggleMenu(){
+  document.getElementById("navMenu").classList.toggle("show");
+}
+
+/* =========================
+   DARK MODE
+========================= */
+function toggleDarkMode(){
+  document.body.classList.toggle("dark");
+}
+
+/* =========================
+   LOAD COURSES FROM BACKEND
+========================= */
+function loadCourses(){
+  fetch("backend/get_courses.php")
+  .then(res => res.json())
+  .then(data => displayCourses(data));
+}
+
+/* =========================
+   SEARCH + FILTER
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+
+  loadCourses();
+
+  let search = document.getElementById("search");
+  let filter = document.getElementById("categoryFilter");
+
+  if(search){
+    search.addEventListener("keyup", function(){
+      fetch("backend/get_courses.php")
+      .then(res => res.json())
+      .then(data => {
+        let value = search.value.toLowerCase();
+        let filtered = data.filter(c => c.title.toLowerCase().includes(value));
+        displayCourses(filtered);
+      });
+    });
+  }
+
+  if(filter){
+    filter.addEventListener("change", function(){
+      fetch("backend/get_courses.php")
+      .then(res => res.json())
+      .then(data => {
+        let value = filter.value;
+        if(value === "all") displayCourses(data);
+        else displayCourses(data.filter(c => c.category === value));
+      });
+    });
+  }
+
+});
+
+
+</script>
+
+
+</body>
+</html>

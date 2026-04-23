@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Course Platform</title>
+<link rel="stylesheet" href="css/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">🎓 Course Selling Platform</div>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="cart.html">Cart</a>
+    <span id="authArea"></span>
+  </nav>
+</header>
+
+<h2>Login</h2>
+<div class="admin-container">
+<input type="email" placeholder="Email">
+<input type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+</div>
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-container">
+    
+    <div class="footer-section">
+      <h3>Course Selling Platform</h3>
+      <p>Learn anytime, anywhere with our online courses.</p>
+    </div>
+
+    <div class="footer-section">
+      <h4>Quick Links</h4>
+      <a href="index.html">Home</a>
+      <a href="#">Courses</a>
+      <a href="login.html">Login</a>
+      <a href="signup.html">Signup</a>
+      
+    </div>
+
+    <div class="footer-section">
+      <h4>Contact</h4>
+      <p>Email: support@CourseSellingPlatform.com</p>
+      <p>Phone: +92 300 1234567</p>
+    </div>
+
+  </div>
+
+  <p class="copyright">© 2026 Course Selling Platform</p>
+</footer>
+
+<script src="js/app.js"></script>
+
+<script>
+
+function login(){
+  let email = document.querySelector("input[type='email']").value;
+  let password = document.querySelector("input[type='password']").value;
+
+  fetch("backend/login.php", {
+    method:"POST",
+    headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:`email=${email}&password=${password}`
+  })
+  .then(res => res.text())
+  .then(data => {
+
+    if(data === "success"){
+
+      let pending = localStorage.getItem("pendingCourse");
+
+      if(pending){
+        fetch("http://localhost/backend/add_to_cart.php", {
+          method:"POST",
+          headers:{"Content-Type":"application/x-www-form-urlencoded"},
+          body:`course_id=${pending}`
+        }).then(() => {
+          localStorage.removeItem("pendingCourse");
+          window.location = "cart.html";
+        });
+      } else {
+        window.location = "dashboard.html";
+      }
+
+    } else {
+      alert(data);
+    }
+
+  });
+}
+
+
+
+</script>
+
+</body>
+</html>

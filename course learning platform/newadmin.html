@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+<!-- HEADER -->
+<header class="header">
+  <div class="logo"> Course Selling Platform</div>
+  <nav class="nav">
+    
+    <a href="#" onclick="logout()">Logout</a>
+  </nav>
+</header>
+
+<h2 style="text-align:center;">Admin Dashboard</h2>
+
+<!-- STATS -->
+<div id="stats"></div>
+
+<!-- ADD COURSE -->
+<div class="admin-form">
+  <h3>Add Course</h3>
+  <input id="title" placeholder="Title">
+  <input id="category" placeholder="Category">
+  <input id="price" placeholder="Price">
+  <button onclick="addCourse()">Add Course</button>
+</div>
+
+<!-- COURSE LIST -->
+<h3>Courses</h3>
+<div id="courses1"></div>
+
+<!-- USERS -->
+<h3>Users</h3>
+<div id="users"></div>
+
+<script src="js/app.js"></script>
+
+<script>
+
+
+/* ================= STATS ================= */
+function loadStats(){
+  fetch(BASE + "/get_stats.php")
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("stats").innerHTML = `
+      <div> Users: ${data.users}</div>
+      <div> Courses: ${data.courses}</div>
+      <div> Purchases: ${data.purchases}</div>
+    `;
+  });
+}
+
+/* ================= COURSES ================= */
+function loadCourses(){
+  fetch(BASE + "/get_courses.php")
+  .then(res => res.json())
+  .then(data => {
+
+    let c = document.getElementById("courses1");
+    c.innerHTML = "";
+
+    data.forEach(course => {
+      c.innerHTML += `
+        <div class="course">
+          <input value="${course.title}" id="t${course.id}" placeholder="Title">
+          <input value="${course.category}" id="c${course.id}" placeholder="category">
+          <input value="${course.price}" id="p${course.id}" placeholder="price">
+          
+          <button onclick="updateCourse(${course.id})">Update</button>
+          <button onclick="deleteCourse(${course.id})">Delete</button>
+        </div>
+      `;
+    });
+
+  });
+}
+
+/* ================= UPDATE ================= */
+function updateCourse(id){
+
+  let title = document.getElementById("t"+id).value;
+  let category = document.getElementById("c"+id).value;
+  let price = document.getElementById("p"+id).value;
+
+  fetch(BASE + "/update_course.php", {
+    method:"POST",
+    headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:`id=${id}&title=${title}&category=${category}&price=${price}`
+  })
+  .then(() => loadCourses());
+}
+
+/* ================= DELETE ================= */
+function deleteCourse(id){
+
+  fetch(BASE + "/delete_course.php", {
+    method:"POST",
+    headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:`id=${id}`
+  })
+  .then(() => loadCourses());
+}
+
+/* ================= ADD ================= */
+function addCourse(){
+
+  let title = document.getElementById("title").value;
+  let category = document.getElementById("category").value;
+  let price = document.getElementById("price").value;
+
+  fetch(BASE + "/add_course.php", {
+    method:"POST",
+    headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:`title=${title}&category=${category}&price=${price}`
+  })
+  .then(() => loadCourses());
+}
+
+/* ================= USERS ================= */
+function loadUsers(){
+  fetch(BASE + "/get_users.php")
+  .then(res => res.json())
+  .then(data => {
+
+    let u = document.getElementById("users");
+    u.innerHTML = "";
+
+    data.forEach(user => {
+      u.innerHTML += `
+        <div class="course">
+          ${user.name} (${user.email})
+          <button onclick="viewPurchases(${user.id})">View Purchases</button>
+          <div id="p${user.id}"></div>
+        </div>
+      `;
+    });
+
+  });
+}
+
+/* ================= USER PURCHASE ================= */
+function viewPurchases(id){
+
+  fetch(BASE + "/get_user_purchases.php?user_id=" + id)
+  .then(res => res.json())
+  .then(data => {
+
+    let div = document.getElementById("p"+id);
+
+    div.innerHTML = data.map(c => `
+      <p>📚 ${c.title}</p>
+    `).join("");
+
+  });
+}
+
+/* ================= LOGOUT ================= */
+function logout(){
+  fetch(BASE + "/logout.php")
+  .then(() => {
+    window.location = "admin_login.html";
+  });
+}
+
+/* ================= INIT ================= */
+loadStats();
+loadCourses();
+loadUsers();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* BODY */
+body {
+  background: #f4f6f9;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2c3e50;
+  color: white;
+  padding: 15px 30px;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.nav a {
+  color: white;
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  text-decoration: underline;
+}
+
+/* TITLE */
+h2 {
+  margin: 20px 0;
+  text-align: center;
+}
+
+/* STATS BOX */
+#stats {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#stats div {
+  background: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* FORM */
+.admin-form {
+  background: white;
+  width: 350px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.admin-form h3 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.admin-form input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.admin-form button {
+  width: 100%;
+  padding: 10px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.admin-form button:hover {
+  background: #219150;
+}
+
+/* COURSE GRID */
+#courses1 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+/* COURSE CARD */
+.course {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.course input {
+  width: 100%;
+  padding: 6px;
+  margin: 5px 0;
+}
+
+/* BUTTONS */
+.course button {
+  margin-top: 5px;
+  padding: 6px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.course button:first-of-type {
+  background: #3498db;
+  color: white;
+}
+
+.course button:last-of-type {
+  background: #e74c3c;
+  color: white;
+}
+
+/* USERS */
+#users {
+  padding: 20px;
+}
+
+#users .course {
+  margin-bottom: 10px;
+}
+
+/* PURCHASE LIST */
+#users p {
+  margin-left: 10px;
+  color: #555;
+}

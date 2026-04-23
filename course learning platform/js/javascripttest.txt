@@ -1,0 +1,23 @@
+function renderCart() {
+
+const cartContainer = document.getElementById('cartItems');
+cartContainer.innerHTML = '';
+cart.forEach(item => {
+const cartitem = document.createElement('div');
+
+cartitem.innerHTML = `
+        <h3>${item.title}</h3>
+        <p>Category: ${item.category}</p>
+        <p>$${item.price}</p>
+`;
+consol.log(item);
+cartContainer.appendChild(cartitem);
+});
+
+}
+
+window.onload = () => {
+
+renderCart();
+
+};
