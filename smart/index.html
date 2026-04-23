@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Task Manager</title>
+
+<style>
+body { font-family: Arial; background:#f4f6f8; margin:0; }
+.container { max-width:900px; margin:auto; padding:20px; }
+.hidden { display:none; }
+
+ header { background:#4CAF50; color:white; padding:15px; text-align:center; }
+
+input, select {
+  padding:10px;
+  margin:5px 0;
+  width:50%;
+}
+
+button {
+  padding:10px;
+  background:#4CAF50;
+  color:white;
+  border:none;
+  margin:5px 0;
+  cursor:pointer;
+}
+
+.task {
+  background:white;
+  padding:10px;
+  margin:5px 0;
+  display:flex;
+  justify-content:space-between;
+}
+
+.completed {
+  text-decoration: line-through;
+  color:gray;
+}
+
+footer {
+  background-color: #333;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+  /*position: fixed;
+  bottom: 0;*/
+  width: 100%;
+  padding-top: 10px;
+}
+</style>
+</head>
+
+<body>
+<header><h1>Smart Task Manager</h1></header>
+<div class="container">
+
+<!-- LOGIN -->
+<div id="loginBox">
+  <h2>Login</h2>
+  <input id="loginUser" placeholder="Username">
+  <input id="loginPass" type="password" placeholder="Password">
+  <br>
+  <button onclick="login()">Login</button>
+
+  <p>No account? <a href="#" onclick="showSignup()">Signup</a></p>
+</div>
+
+<!-- SIGNUP -->
+<div id="signupBox" class="hidden">
+  <h2>Signup</h2>
+  <input id="signupUser" placeholder="Username">
+  <input id="signupPass" type="password" placeholder="Password">
+  <br>
+  <button onclick="signup()">Signup</button>
+
+  <p>Already have account? <a href="#" onclick="showLogin()">Login</a></p>
+  <!--  <a href="#" onclick="showLogin()">Login</a>-->
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+  <button onclick="logout()">Logout</button>
+
+  <h2>Tasks</h2>
+
+  <input id="taskInput" placeholder="Enter task">
+  <select id="priority">
+    <option>Low</option>
+    <option>Medium</option>
+    <option>High</option>
+  </select>
+<input type="date" id="dueDate">
+<br>
+  <button onclick="addTask()">Add Task</button>
+
+<br><br>
+  <!-- Stats -->
+  <div id="stats"></div>
+  <div style="background:#ddd;height:10px">
+    <div id="progressBar" style="height:10px;width:0%;background:green"></div>
+  </div>
+<br>
+  <!-- Filters -->
+  <button onclick="setFilter('all')">All</button>
+  <button onclick="setFilter('completed')">Completed</button>
+  <button onclick="setFilter('pending')">Pending</button>
+
+  <div id="taskList"></div>
+</div>
+
+</div>
+<footer>
+      <p>&copy; 2026 Smart Task Manager</p>
+    </footer>
+<script>
+let user_id = null;
+let tasks = [];
+let filter = 'all';
+
+/* ================= AUTH ================= */
+
+function showSignup() {
+  loginBox.classList.add('hidden');
+  signupBox.classList.remove('hidden');
+}
+
+function showLogin() {
+  signupBox.classList.add('hidden');
+  loginBox.classList.remove('hidden');
+}
+
+function signup() {
+  fetch('api/signup.php', {
+    method: 'POST',
+    body: new URLSearchParams({
+      username: signupUser.value,
+      password: signupPass.value
+    })
+  })
+  .then(res => res.text())
+  .then(msg => {
+    alert(msg);
+    showLogin();
+  });
+}
+
+function login() {
+  fetch('api/login.php', {
+    method: 'POST',
+    body: new URLSearchParams({
+      username: loginUser.value,
+      password: loginPass.value
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'success') {
+      user_id = data.user_id;
+
+      loginBox.classList.add('hidden');
+      app.classList.remove('hidden');
+
+      loadTasks();
+    } else {
+      alert("Invalid login");
+    }
+  });
+}
+
+function logout() {
+  location.reload();
+}
+
+/* ================= TASKS ================= */
+
+function loadTasks() {
+  fetch(`api/get_tasks.php?user_id=${user_id}`)
+  .then(res => res.json())
+  .then(data => {
+    tasks = data;
+    render();
+  });
+}
+
+function addTask() {
+  fetch('api/add_task.php', {
+    method: 'POST',
+    body: new URLSearchParams({
+      user_id: user_id,
+      text: taskInput.value,
+      priority: priority.value,
+      date: dueDate.value
+      
+    })
+  })
+  .then(res => res.text())
+  .then(msg => {
+    alert(msg);
+      taskInput.value = '';
+    loadTasks();
+  });
+  /*
+  .then(() => {
+    taskInput.value = '';
+    loadTasks();
+  });*/
+}
+
+function toggleTask(id) {
+  fetch('api/toggle_task.php', {
+    method: 'POST',
+    body: new URLSearchParams({ id })
+  }).then(loadTasks);
+}
+
+function deleteTask(id) {
+  fetch('api/delete_task.php', {
+    method: 'POST',
+    body: new URLSearchParams({ id })
+  }).then(loadTasks);
+}
+
+/* ================= UI ================= */
+
+function setFilter(f) {
+  filter = f;
+  render();
+}
+
+function render() {
+  let list = document.getElementById('taskList');
+  list.innerHTML = '';
+
+  let filtered = tasks;
+
+  if (filter === 'completed')
+    filtered = tasks.filter(t => t.completed == 1);
+
+  if (filter === 'pending')
+    filtered = tasks.filter(t => t.completed == 0);
+
+  let completed = tasks.filter(t => t.completed == 1).length;
+  let total = tasks.length;
+  let percent = total ? Math.round((completed / total) * 100) : 0;
+
+  stats.innerHTML = `
+    Total: ${total} | Completed: ${completed} | Pending: ${total - completed}
+  `;
+
+  progressBar.style.width = percent + '%';
+
+  filtered.forEach(t => {
+    list.innerHTML += `
+      <div class="task">
+        <div class="${t.completed == 1 ? 'completed' : ''}">
+          ${t.text} (${t.priority}) ${t.due_date}
+        </div>
+        <div>
+          <button onclick="toggleTask(${t.id})">✔</button>
+          <button onclick="deleteTask(${t.id})">X</button>
+        </div>
+      </div>
+    `;
+  });
+}
+</script>
+
+</body>
+</html>
