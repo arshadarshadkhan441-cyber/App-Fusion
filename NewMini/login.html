@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="navbar">
+
+  <div class="logo">ManiSaaS</div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="signup.html">Signup</a>
+  </nav>
+
+</header>
+<div class="auth-container">
+
+  <div class="auth-card">
+
+    <h1>ManiSaaS</h1>
+
+    <h2>Login</h2>
+
+    <input
+      type="email"
+      id="loginEmail"
+      placeholder="Email"
+    >
+
+    <input
+      type="password"
+      id="loginPassword"
+      placeholder="Password"
+    >
+
+    <select id="loginRole">
+      <option value="user">User</option>
+      <option value="admin">Admin</option>
+    </select>
+
+    <button onclick="login()">
+      Login
+    </button>
+
+    <p>
+      Don't have account?
+      <a href="signup.html">Signup</a>
+    </p>
+
+  </div>
+
+</div>
+<footer>
+  <p>© 2026 Mani SaaS Application</p>
+</footer>
+<script src="js/app.js"></script>
+</body>
+</html>

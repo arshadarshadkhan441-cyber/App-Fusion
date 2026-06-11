@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="sidebar">
+
+  <h2>ManiSaaS</h2>
+
+  <button onclick="showSection('dashboard')">
+    Dashboard
+  </button>
+
+  <button onclick="showSection('projects')">
+    Projects
+  </button>
+
+  <button onclick="showSection('clients')">
+    Clients
+  </button>
+
+  <button onclick="showSection('team')">
+    Team
+  </button>
+
+  <button onclick="showSection('uploads')">
+    Uploads
+  </button>
+
+  <button onclick="logout()">
+    Logout
+  </button>
+
+</div>
+
+<div class="main-content">
+
+<section id="dashboard" class="section">
+
+<h1>Dashboard</h1>
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Projects</h3>
+<p id="totalProjects">0</p>
+</div>
+
+<div class="card">
+<h3>Total Clients</h3>
+<p id="totalClients">0</p>
+</div>
+
+<div class="card">
+<h3>Total Team</h3>
+<p id="totalTeam">0</p>
+</div>
+
+</div>
+
+</section>
+
+<section id="projects" class="section hidden">
+
+<h1>Projects</h1>
+
+<div class="form-grid">
+
+<input
+type="text"
+id="projectTitle"
+placeholder="Project Title"
+>
+
+<input
+type="text"
+id="projectDescription"
+placeholder="Description"
+>
+
+<select id="projectStatus">
+<option>Pending</option>
+<option>In Progress</option>
+<option>Completed</option>
+</select>
+
+<input
+type="date"
+id="projectDeadline"
+>
+
+<button onclick="addProject()">
+Add Project
+</button>
+
+</div>
+
+<div id="projectList"></div>
+
+</section>
+
+<section id="clients" class="section hidden">
+
+<h1>Clients</h1>
+
+<div class="form-grid">
+
+<input
+type="text"
+id="clientName"
+placeholder="Client Name"
+>
+
+<input
+type="email"
+id="clientEmail"
+placeholder="Client Email"
+>
+
+<input
+type="text"
+id="clientCompany"
+placeholder="Company"
+>
+
+<button onclick="addClient()">
+Add Client
+</button>
+
+</div>
+
+<div id="clientList"></div>
+
+</section>
+
+<section id="team" class="section hidden">
+
+<h1>Team Members</h1>
+
+<div class="form-grid">
+
+<input
+type="text"
+id="teamName"
+placeholder="Team Member Name"
+>
+
+<input
+type="text"
+id="teamRole"
+placeholder="Role"
+>
+
+<input
+type="email"
+id="teamEmail"
+placeholder="Email"
+>
+
+<button onclick="addTeam()">
+Add Team Member
+</button>
+
+</div>
+
+<div id="teamList"></div>
+
+</section>
+
+<section id="uploads" class="section hidden">
+
+<h1>File Uploads</h1>
+
+<input type="file" id="fileInput">
+
+<button onclick="uploadFile()">
+Upload File
+</button>
+
+<div id="fileList"></div>
+
+</section>
+
+</div>
+
+<div id="notification"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
